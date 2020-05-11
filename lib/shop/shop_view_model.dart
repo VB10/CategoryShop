@@ -10,6 +10,7 @@ abstract class ShopViewModel extends State<Shop> {
   ScrollController scrollController = ScrollController();
   int currentCategoryIndex = 0;
   ScrollController headerScrollController = ScrollController();
+  double oneItemHeight = 0;
 
   @override
   void initState() {
@@ -36,4 +37,25 @@ abstract class ShopViewModel extends State<Shop> {
           curve: Curves.decelerate);
     });
   }
+
+  void headerListChangePosition(int index) {
+    scrollController.animateTo(shopList[index].position,
+        duration: Duration(seconds: 1), curve: Curves.ease);
+  }
+
+  void fillListPositionValues(double val) {
+    if (oneItemHeight == 0) {
+      oneItemHeight = val;
+      shopList.asMap().forEach((key, value) {
+        if (key == 0) {
+          shopList[key].position = 0;
+        } else {
+          shopList[key].position = getShopListPosition(val, key);
+        }
+      });
+    }
+  }
+
+  double getShopListPosition(double val, int key) =>
+      val * (shopList[key].products.length / 4) + shopList[key - 1].position;
 }
