@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:shoplist/shop/model/shop_model.dart';
-import 'package:shoplist/shop/widget/shop_card.dart';
+
 import './shop.dart';
+import 'model/shop_helper.dart';
+import 'model/shop_model.dart';
 import 'state/tabbar_change.dart';
 
 abstract class ShopViewModel extends State<Shop> {
-  List<ShopModel> shopList = [];
-
   ScrollController scrollController = ScrollController();
   int currentCategoryIndex = 0;
   ScrollController headerScrollController = ScrollController();
-  double oneItemHeight = 0;
+
+  List<ShopModel> shopList = [];
 
   @override
   void initState() {
@@ -29,7 +29,7 @@ abstract class ShopViewModel extends State<Shop> {
     scrollController.addListener(() {
       final index = shopList
           .indexWhere((element) => element.position >= scrollController.offset);
-      change.changeIndex(index);
+      tabBarNotifier.changeIndex(index);
 
       headerScrollController.animateTo(
           index * (MediaQuery.of(context).size.width * 0.2),
@@ -42,6 +42,8 @@ abstract class ShopViewModel extends State<Shop> {
     scrollController.animateTo(shopList[index].position,
         duration: Duration(seconds: 1), curve: Curves.ease);
   }
+
+  double oneItemHeight = 0;
 
   void fillListPositionValues(double val) {
     if (oneItemHeight == 0) {
@@ -56,6 +58,7 @@ abstract class ShopViewModel extends State<Shop> {
     }
   }
 
-  double getShopListPosition(double val, int key) =>
-      val * (shopList[key].products.length / 4) + shopList[key - 1].position;
+  double getShopListPosition(double val, int index) =>
+      val * (shopList[index].products.length / ShopHelper.GRID_COLUMN_VALUE) +
+      shopList[index - 1].position;
 }

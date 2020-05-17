@@ -9,4 +9,4 @@ class TabBarChange extends ChangeNotifier {
   }
 }
 
-TabBarChange change = TabBarChange();
+TabBarChange tabBarNotifier = TabBarChange();

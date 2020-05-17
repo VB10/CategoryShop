@@ -1,5 +1,3 @@
-import 'package:flutter/widgets.dart';
-
 class ShopModel {
   final String categoryName;
   final List<Product> products;

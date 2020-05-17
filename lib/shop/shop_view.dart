@@ -21,47 +21,52 @@ class ShopView extends ShopViewModel {
 
   ChangeNotifierProvider<TabBarChange> buildChangeBody() {
     return ChangeNotifierProvider.value(
-      value: change,
+      value: tabBarNotifier,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Expanded(flex: 1, child: buildListViewHeader()),
+          Expanded(flex: 1, child: buildListViewHeader),
           Divider(),
-          Expanded(flex: 9, child: buildListViewShop()),
+          Expanded(flex: 9, child: buildListViewShop),
         ],
       ),
     );
   }
 
-  ListView buildListViewShop() {
-    return ListView(
-        controller: scrollController,
-        children: List.generate(shopList.length + 1, (index) {
-          if (index == shopList.length) {
-            return emptyWidget();
-          }
-          return ShopCardBody(
+  ListView get buildListViewShop {
+    return ListView.builder(
+      controller: scrollController,
+      itemCount: shopListAndSpaceAreaLength,
+      itemBuilder: (context, index) {
+        print(index);
+        if (index == shopListLastIndex)
+          return emptyWidget;
+        else
+          return ShopCard(
             model: shopList[index],
             index: index,
             onHeight: (val) {
               fillListPositionValues(val);
             },
           );
-        }));
+      },
+    );
   }
 
-  Container emptyWidget() => Container(height: oneItemHeight * 2);
+  int get shopListAndSpaceAreaLength => shopList.length + 1;
 
-  Widget buildListViewHeader() {
+  int get shopListLastIndex => shopList.length;
+
+  Container get emptyWidget => Container(height: oneItemHeight * 2);
+
+  Widget get buildListViewHeader {
     return Consumer<TabBarChange>(
       builder: (context, value, child) => ListView.builder(
         itemCount: shopList.length,
         controller: headerScrollController,
         padding: EdgeInsets.all(10),
         scrollDirection: Axis.horizontal,
-        itemBuilder: (context, index) {
-          return buildPaddingHeaderCard(index);
-        },
+        itemBuilder: (context, index) => buildPaddingHeaderCard(index),
       ),
     );
   }
@@ -70,9 +75,9 @@ class ShopView extends ShopViewModel {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 5),
       child: RaisedButton(
-        color: change.index == index ? Colors.red : Colors.blue,
+        color: tabBarNotifier.index == index ? Colors.red : Colors.blue,
         onPressed: () => headerListChangePosition(index),
-        child: Text(shopList[index].categoryName),
+        child: Text("${shopList[index].categoryName} $index"),
         shape: StadiumBorder(),
       ),
     );
